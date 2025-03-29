@@ -59,7 +59,7 @@ def get_gemini_response(user_message):
         if emotion!="neutral":
             prompt=user_message+" "+em_msg+" please keep msg as short most 3 lines."
         else:
-            prompt=user_message
+            prompt=user_message + "enquie about me.please keep msg as short most 3 lines."
         response = model.generate_content(prompt)
         print(response)
         return response.text
