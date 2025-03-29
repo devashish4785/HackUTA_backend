@@ -1,12 +1,12 @@
 import google.generativeai as genai
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,render_template
 import os
 from flask_cors import CORS
 
 
 # Initialize the Flask app
 app = Flask(__name__)
-
+CORS(app)  # Enable CORS for all routes
 # Set your API Key or use the Google Cloud authentication
 genai.configure(api_key="AIzaSyC3KFEmeh79oLPw0ahrP_0MOq4eWfePKBM")  # Use your API key here
 # Initialize the model
@@ -23,12 +23,9 @@ def get_gemini_response(user_message):
     except Exception as e:
         return {"error": f"Error occurred: {str(e)}"}
 
-
-
-app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
-
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 
 
