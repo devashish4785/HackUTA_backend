@@ -1,6 +1,8 @@
 import google.generativeai as genai
 from flask import Flask, request, jsonify
 import os
+from flask_cors import CORS
+
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -21,9 +23,14 @@ def get_gemini_response(user_message):
     except Exception as e:
         return {"error": f"Error occurred: {str(e)}"}
 
-@app.route('/')
-def home():
-    return jsonify({"message": "Hello! Welcome to the Gemini-powered chatbot!"})
+
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+
+
+
 
 @app.route('/chat', methods=['POST'])
 def chat():
