@@ -1,17 +1,14 @@
 import google.generativeai as genai
 
 
-genai.configure(api_key="AIzaSyCATbVa5uQ4MKXVq5mK9Feb4wFiyJEh7Cc")  # Use your API key here
-# Initialize the model
+genai.configure(api_key="AIzaSyDcB_VR0QJm8ZXcPLG1KseSvexdQYtez14")  
 model = genai.GenerativeModel("gemini-1.5-pro")
 
 start=True
 initial_condition="i am an suffering from some mental condition. i need you to interact with me and call me a nick name you like i may be any person on earth. Always keeps responses short to 3 lines most."
 
 def modify_prompt_for_emotion(user_message):
-    """
-    Detects emotion, assigns a background color, and modifies the prompt.
-    """
+
     emotion_prompts = {
         "sad": "I am feeling sad. Respond with empathy and kindness.",
         "depressed": "I am feeling down and hopeless. Provide comforting words.",

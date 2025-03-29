@@ -7,8 +7,8 @@ import emotions_response as er
 
 # Initialize the Flask app
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-# Set your API Key or use the Google Cloud authentication
+CORS(app)  
+
 
 
 
@@ -19,7 +19,7 @@ def home():
     if request.method == 'POST':
         user_input = request.form.get('user_input')  # Get the input from the form
         
-        # Here, you can send the input to the backend for further processing if needed
+    
         gemini_response = er.get_gemini_response(user_input)  # Getting response from Gemini API
         
         return render_template('index.html', user_input=user_input, gemini_response=gemini_response)  # Pass input and response to template
