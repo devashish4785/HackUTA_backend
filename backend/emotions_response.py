@@ -6,18 +6,18 @@ genai.configure(api_key="AIzaSyCATbVa5uQ4MKXVq5mK9Feb4wFiyJEh7Cc")  # Use your A
 model = genai.GenerativeModel("gemini-1.5-pro")
 
 start=True
-intial_condition="i am an suffering from some mental condition. i need you to interact with me and call me a nick name you like i may be any person on earth. Always keeps responses short to 3 lines most."
+initial_condition="i am an suffering from some mental condition. i need you to interact with me and call me a nick name you like i may be any person on earth. Always keeps responses short to 3 lines most."
 
 def modify_prompt_for_emotion(user_message):
     """
-    Detects emotion and modifies the prompt before sending it to Gemini.
+    Detects emotion, assigns a background color, and modifies the prompt.
     """
     emotion_prompts = {
-        "sad": "I am  feeling sad. Respond with empathy and kindness.",
-        "depressed": "I am  feeling down and hopeless. Provide comforting words.",
-        "happy": "I am  feeling happy. Engage with enthusiasm and positivity.",
-        "angry": "I am  angry. Acknowledge their frustration and provide a calming response.",
-        "anxious": "I am  anxious. Offer supportive and reassuring words.",
+        "sad": "I am feeling sad. Respond with empathy and kindness.",
+        "depressed": "I am feeling down and hopeless. Provide comforting words.",
+        "happy": "I am feeling happy. Engage with enthusiasm and positivity.",
+        "angry": "I am angry. Acknowledge frustration and provide a calming response.",
+        "anxious": "I am anxious. Offer supportive and reassuring words.",
         "neutral": "I have a general query. Respond in a helpful and informative manner."
     }
 
@@ -30,8 +30,17 @@ def modify_prompt_for_emotion(user_message):
         "anxious": ["anxious", "nervous", "worried", "stressed", "overthinking"]
     }
 
+    # Colors assigned to each emotion
+    emotion_colors = {
+        "sad": "#3498db",        # Blue
+        "depressed": "#2c3e50",  # Dark Blue/Gray
+        "happy": "#f1c40f",      # Yellow
+        "angry": "#e74c3c",      # Red
+        "anxious": "#9b59b6",    # Purple
+        "neutral": "#FFFFFF"     # white
+    }
+
     detected_emotion = "neutral"
-    modified_prompt=' '
 
     # Detect emotion in user input
     for emotion, keywords in emotions.items():
@@ -39,29 +48,39 @@ def modify_prompt_for_emotion(user_message):
             detected_emotion = emotion
             break
 
-    # Modify the prompt before sending it to Gemini
+    # Get the corresponding color and modified prompt
     modified_prompt = emotion_prompts[detected_emotion]
+    background_color = emotion_colors[detected_emotion]
 
-    return detected_emotion, modified_prompt
+    return detected_emotion, modified_prompt, background_color
+
 
 
 # Function to get a response from the Gemini API
 def get_gemini_response(user_message):
     global start
     if start:
-        start=False
-        response = model.generate_content(intial_condition)
-        return response.text
-        
+        start = False
+        response = model.generate_content(initial_condition)
+        return {"response": response.text, "background_color": "#FFFFFF"}  # Default white
+
     try:
-        # Use the Gemini API to get a response based on the user message
-        emotion,em_msg=modify_prompt_for_emotion(user_message=user_message)
-        if emotion!="neutral":
-            prompt=user_message+" "+em_msg+" please keep msg as short most 3 lines."
+        # Detect emotion, modify prompt, and get background color
+        emotion, em_msg, background_color = modify_prompt_for_emotion(user_message=user_message)
+
+        # Construct the prompt for Gemini
+        if emotion != "neutral":
+            prompt = f"{user_message} {em_msg} Please keep the message short (max 3 lines)."
         else:
-            prompt=user_message + "enquie about me.please keep msg as short most 3 lines."
+            prompt = f"{user_message} Enquire about me as a request. Please keep the message short (max 3 lines)."
+
+        # Get response from Gemini
         response = model.generate_content(prompt)
-        print(response)
-        return response.text
+
+        # Check if the background color is NOT white
+        
+        return {"response": response.text, "background_color": background_color}
+        
+
     except Exception as e:
         return {"error": f"Error occurred: {str(e)}"}

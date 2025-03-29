@@ -41,7 +41,15 @@ def chat():
     if "error" in gemini_response:
         return jsonify(gemini_response), 500
 
-    return jsonify({"response": gemini_response})
+    # Check if background color is present in the response
+    if "background_color" in gemini_response:
+        return jsonify({
+            "response": gemini_response["response"],
+            "background_color": gemini_response["background_color"]
+        })
+    
+    # If no background color, return normal response
+    return jsonify({"response": gemini_response["response"]})
 
 if __name__ == '__main__':
     port = os.getenv("PORT", 5000)
